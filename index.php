@@ -1,26 +1,35 @@
-<?php
+<?php # index.php - Script 9.7
 
+// Need the utilities file:
 require('includes/utilities.inc.php');
 
+// Include the header:
 $pageTitle = 'Welcome to the Site!';
+include('includes/header.inc.php');
 
-include('includes/header,inc.php');
-
+// Fetch the three most recent pages:
 try {
-
-    $q = 'SELECT id title, content, DATE_FORMAT(dataAdded, "%e %M %Y") AS dateAdded FROM pages ORDER BY dataAdded DESC LIMIT 3';
+    
+    $q = 'SELECT id, title, content, DATE_FORMAT(dateAdded, "%e %M %Y") AS dateAdded FROM pages ORDER BY dateAdded DESC LIMIT 3'; 
     $r = $pdo->query($q);
+    
+    // Check that rows were returned:
+    if ($r && $r->rowCount() > 0) {
 
-    if($r && $r->rowCount() > 0) {
-
+        // Set the fetch mode:
         $r->setFetchMode(PDO::FETCH_CLASS, 'Page');
-        include('views/index.html');
-    }else {
 
+        // Records will be fetched in the view:
+        include('views/index.html');
+
+    } else { // Problem!
         throw new Exception('No content is available to be viewed at this time.');
     }
-}catch(Exception $e){
-
-    include('view/error.html');
+        
+} catch (Exception $e) { // Catch generic Exceptions.
+    include('views/error.html');
 }
-include('include/footer.inc.php');
+
+// Include the footer:
+include('includes/footer.inc.php');
+?>
